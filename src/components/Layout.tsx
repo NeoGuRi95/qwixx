@@ -1,6 +1,6 @@
 import MainComponent from './MainComponent';
 
-const Layout = (props: any) => {
-	return <MainComponent />;
+const Layout = () => {
+  return <MainComponent />;
 };
 export default Layout;
