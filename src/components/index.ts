@@ -1,2 +1,4 @@
 export { default as Layout } from './Layout';
-export { default as MainComponent } from './MainComponent';
+export { default as RoomPage } from './RoomPage';
+export { default as UserList } from './UserList';
+export { default as DiceSet } from './DiceSet';
