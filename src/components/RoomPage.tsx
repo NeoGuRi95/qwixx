@@ -9,10 +9,10 @@ const RoomPage = () => {
       <Grid item xs={2}>
         <UserList />
       </Grid>
-      <Grid item xs={5} sx={{ display: 'flex', alignItems: 'center' }}>
+      <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center' }}>
         <DiceSet />
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={7}>
         <Sheet />
       </Grid>
     </Grid>

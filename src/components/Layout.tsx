@@ -3,7 +3,7 @@ import GameRoomPage from './RoomPage';
 
 const Layout = () => {
   return (
-    <Container id="layout-container" sx={{ height: '100vh' }}>
+    <Container id="layout-container" sx={{ height: '100vh', px: '8px' }}>
       <GameRoomPage />
     </Container>
   );
