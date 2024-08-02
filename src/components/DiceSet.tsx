@@ -1,10 +1,19 @@
-import { Soap } from '@mui/icons-material';
-import { Box, Button, IconButton } from '@mui/material';
+import { Box } from '@mui/material';
 import { useRef } from 'react';
 import ReactDice, { ReactDiceRef } from 'react-dice-complete';
 
+// 공통 props 객체
+const commonDiceProps = {
+  disableIndividual: true,
+  rollTime: 1,
+  numDice: 1,
+  outline: true,
+  outlineColor: '#d3d3d3',
+};
+
 const DiceSet = () => {
-  const whiteDiceRef = useRef<ReactDiceRef>(null);
+  const whiteDiceRef1 = useRef<ReactDiceRef>(null);
+  const whiteDiceRef2 = useRef<ReactDiceRef>(null);
   const redDiceRef = useRef<ReactDiceRef>(null);
   const blueDiceRef = useRef<ReactDiceRef>(null);
   const yellowDiceRef = useRef<ReactDiceRef>(null);
@@ -16,7 +25,8 @@ const DiceSet = () => {
   };
 
   const rollAll = () => {
-    whiteDiceRef.current?.rollAll();
+    whiteDiceRef1.current?.rollAll();
+    whiteDiceRef2.current?.rollAll();
     redDiceRef.current?.rollAll();
     blueDiceRef.current?.rollAll();
     yellowDiceRef.current?.rollAll();
@@ -24,38 +34,60 @@ const DiceSet = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyItems: 'center',
-      }}
-    >
-      <Box sx={{ display: 'flex' }}>
-        {/* white dice */}
+    <Box onClick={rollAll} sx={{ width: '100%' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        {/* white dice 1 */}
         <ReactDice
-          disableIndividual
-          numDice={2}
-          rollTime={1}
-          ref={whiteDiceRef}
+          {...commonDiceProps}
+          faceColor="#f5f5f5"
+          dotColor="#000000"
+          ref={whiteDiceRef1}
           rollDone={rollDone}
         />
-        {/* red, blue, yellow, green dice */}
-        {[redDiceRef, blueDiceRef, yellowDiceRef, greenDiceRef].map(
-          (diceRef) => (
-            <ReactDice
-              disableIndividual
-              numDice={1}
-              rollTime={1}
-              ref={diceRef}
-              rollDone={rollDone}
-            />
-          )
-        )}
+        {/* red dice */}
+        <ReactDice
+          {...commonDiceProps}
+          faceColor="#ff0000"
+          dotColor="#ffffff"
+          ref={redDiceRef}
+          rollDone={rollDone}
+        />
+        {/* blue dice */}
+        <ReactDice
+          {...commonDiceProps}
+          faceColor="#0000ff"
+          dotColor="#ffffff"
+          ref={blueDiceRef}
+          rollDone={rollDone}
+        />
       </Box>
-      <IconButton onClick={rollAll}>
-        <Soap fontSize="large" />
-      </IconButton>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        {/* white dice 2 */}
+        <ReactDice
+          {...commonDiceProps}
+          faceColor="#f5f5f5"
+          dotColor="#000000"
+          ref={whiteDiceRef2}
+          rollDone={rollDone}
+        />
+
+        {/* yellow dice */}
+        <ReactDice
+          {...commonDiceProps}
+          faceColor="#ffd700"
+          dotColor="#ffffff"
+          ref={yellowDiceRef}
+          rollDone={rollDone}
+        />
+        {/* green dice */}
+        <ReactDice
+          {...commonDiceProps}
+          faceColor="#008000"
+          dotColor="#ffffff"
+          ref={greenDiceRef}
+          rollDone={rollDone}
+        />
+      </Box>
     </Box>
   );
 };
