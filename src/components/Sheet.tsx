@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
-import { Lock } from '@material-ui/icons';
+import { Clear, Lock } from '@material-ui/icons';
 
 interface Scores {
   red: boolean[];
@@ -68,6 +68,13 @@ const Sheet: React.FC = () => {
     green: 0,
     blue: 0,
   });
+  // 실패 선택 상태
+  const [penalties, setPenalties] = useState<boolean[]>([
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   // 점수 선택 배열을 확인하여 함계 점수 계산
   const calculateScore = (scores: boolean[]): number => {
@@ -81,9 +88,8 @@ const Sheet: React.FC = () => {
     );
   };
 
-  // 점수 선택 상태의 특정 숫자를 클릭하여 해당 숫자를 선택
-  // (기선택된 점수인 경우 미선택으로 수정)
-  const handleCheck = (color: keyof Scores, index: number) => {
+  // 점수 선택
+  const handleCheckScore = (color: keyof Scores, index: number) => {
     // 점수 선택 상태 업데이트
     const newScores = { ...scores };
     newScores[color][index] = !scores[color][index];
@@ -93,6 +99,27 @@ const Sheet: React.FC = () => {
     newScoresSum[color] = calculateScore(newScores[color]);
     setScoresSum(newScoresSum);
   };
+
+  // 실패 칸 선택
+  const handleCheckPenalty = (index: number) => {
+    const newPenalties = [...penalties];
+    newPenalties[index] = !penalties[index];
+    setPenalties(newPenalties);
+  };
+
+  // 색상 점수 합계 계산
+  const totalScoresSum = useMemo(() => {
+    return Object.values(scoresSum).reduce((total, score) => total + score, 0);
+  }, [scoresSum]);
+
+  // 실패 점수 합계 계산
+  const totalPenaltySum = useMemo(() => {
+    return (
+      penalties.reduce((count, currentValue) => {
+        return currentValue ? count + 1 : count;
+      }, 0) * 5
+    );
+  }, [penalties]);
 
   return (
     <Box
@@ -123,7 +150,7 @@ const Sheet: React.FC = () => {
             ).map((number, index) => (
               <Box
                 key={number}
-                onClick={() => handleCheck(color as keyof Scores, index)}
+                onClick={() => handleCheckScore(color as keyof Scores, index)}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -174,6 +201,16 @@ const Sheet: React.FC = () => {
             </>
           ))}
           {/* 실패 점수 합계 칸 */}
+          <>
+            <Typography>-</Typography>
+            <Box
+              sx={{
+                ...scoresSumCommonStyle,
+              }}
+            >
+              <Typography>{totalPenaltySum}</Typography>
+            </Box>
+          </>
           {/* 총 점수 합계 칸 */}
           <>
             <Typography>=</Typography>
@@ -182,57 +219,28 @@ const Sheet: React.FC = () => {
                 ...scoresSumCommonStyle,
               }}
             >
-              <Typography>
-                {Object.values(scoresSum).reduce(
-                  (total, score) => total + score,
-                  0
-                )}
-              </Typography>
+              <Typography>{totalScoresSum - totalPenaltySum}</Typography>
             </Box>
           </>
         </Box>
         {/* 실패 칸 */}
         <Box sx={{ display: 'flex', gap: '2px' }}>
-          <Box
-            sx={{
-              width: '30px',
-              height: '30px',
-              border: '1px solid #000000',
-              borderRadius: '5px',
-            }}
-          >
-            x
-          </Box>
-          <Box
-            sx={{
-              width: '30px',
-              height: '30px',
-              border: '1px solid #000000',
-              borderRadius: '5px',
-            }}
-          >
-            x
-          </Box>
-          <Box
-            sx={{
-              width: '30px',
-              height: '30px',
-              border: '1px solid #000000',
-              borderRadius: '5px',
-            }}
-          >
-            x
-          </Box>
-          <Box
-            sx={{
-              width: '30px',
-              height: '30px',
-              border: '1px solid #000000',
-              borderRadius: '5px',
-            }}
-          >
-            x
-          </Box>
+          {penalties.map((penalty, index) => (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '30px',
+                height: '30px',
+                border: '1px solid #000000',
+                borderRadius: '5px',
+              }}
+              onClick={() => handleCheckPenalty(index)}
+            >
+              {penalty ? <Clear /> : undefined}
+            </Box>
+          ))}
         </Box>
       </Box>
     </Box>
