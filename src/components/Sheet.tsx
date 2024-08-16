@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
-import { Clear, Lock } from '@material-ui/icons';
+import { Clear, Lock, LockOpen } from '@material-ui/icons';
 
 interface Scores {
   red: boolean[];
@@ -16,11 +16,21 @@ interface ScoresSum {
   blue: number;
 }
 
+interface ScoresLock {
+  red: boolean;
+  yellow: boolean;
+  green: boolean;
+  blue: boolean;
+}
+
 // 빨강, 노랑 점수 배열
 const ascScoreRow = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 // 초록, 파랑 점수 배열
 const descScoreRow = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
+
+// 점수 배열
+const scoreInfo = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78];
 
 const scoresSumCommonStyle = {
   display: 'flex',
@@ -54,19 +64,19 @@ const scoresSumColorStyle: Record<keyof ScoresSum, object> = {
 };
 
 const Sheet: React.FC = () => {
-  // 점수 선택 상태
+  // 색상 점수 선택 상태
   const [scores, setScores] = useState<Scores>({
     red: Array(ascScoreRow.length).fill(false),
     yellow: Array(ascScoreRow.length).fill(false),
     green: Array(descScoreRow.length).fill(false),
     blue: Array(descScoreRow.length).fill(false),
   });
-  // 점수 합계 배열
-  const [scoresSum, setScoresSum] = useState<ScoresSum>({
-    red: 0,
-    yellow: 0,
-    green: 0,
-    blue: 0,
+  // 색상 잠금 상태
+  const [locks, setLocks] = useState<ScoresLock>({
+    red: false,
+    yellow: false,
+    green: false,
+    blue: false,
   });
   // 실패 선택 상태
   const [penalties, setPenalties] = useState<boolean[]>([
@@ -75,10 +85,16 @@ const Sheet: React.FC = () => {
     false,
     false,
   ]);
+  // 색상 점수 합계 배열
+  const [scoresSum, setScoresSum] = useState<ScoresSum>({
+    red: 0,
+    yellow: 0,
+    green: 0,
+    blue: 0,
+  });
 
   // 점수 선택 배열을 확인하여 함계 점수 계산
   const calculateScore = (scores: boolean[]): number => {
-    const scoreInfo = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78];
     return (
       scoreInfo[
         scores.reduce((sum, currentValue) => {
@@ -98,6 +114,12 @@ const Sheet: React.FC = () => {
     const newScoresSum = { ...scoresSum };
     newScoresSum[color] = calculateScore(newScores[color]);
     setScoresSum(newScoresSum);
+  };
+
+  const handleCheckLock = (color: keyof ScoresLock) => {
+    const newLocks = { ...locks };
+    newLocks[color] = !locks[color];
+    setLocks(newLocks);
   };
 
   // 실패 칸 선택
@@ -169,8 +191,10 @@ const Sheet: React.FC = () => {
                 <Typography>{number}</Typography>
               </Box>
             ))}
-            <IconButton>
-              <Lock />
+            <IconButton
+              onClick={() => handleCheckLock(color as keyof ScoresLock)}
+            >
+              {locks[color as keyof ScoresLock] ? <Lock /> : <LockOpen />}
             </IconButton>
           </Box>
         </Box>
